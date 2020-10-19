@@ -1,0 +1,17 @@
+node_modules
+
+yarn-error.lock
+
+.next
+src/public/assets/main.js
+wordpress/plugins/**/*.*
+!wordpress/ebay-sold-items
+.environments
+*.log
+yarn.lock
+dist
+.vscode
+src/__tests__
+jest.config.js
+jest.setup.js
+schema.json
