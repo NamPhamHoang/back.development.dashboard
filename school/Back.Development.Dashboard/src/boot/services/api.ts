@@ -3,6 +3,10 @@ import log from "~@/utils/logger";
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import {
+    TakeProject,
+    chatThread
+} from "~@/routes/api"
 
 const app = express();
 app.use(
@@ -12,40 +16,6 @@ app.use(
     })
 );
 
-// app.use(
-//     "/hasura",
-//     createProxyMiddleware({
-//         target: `${process.env.HASURA_ENDPOINT}`,
-//         logLevel: "error",
-//         pathRewrite: (path) => {
-//             const pathSlashArr = path.split("/").filter((str) => str.length > 0);
-//             if (pathSlashArr.length <= 1) return "/";
-//             pathSlashArr.shift();
-//             return "/" + pathSlashArr.join("/");
-//         },
-
-//         ws: true,
-//         followRedirects: true,
-//     })
-// );
-
-
-// app.use(
-//     "/_next",
-//     createProxyMiddleware({
-//         target: `${process.env.WEB_ADMIN_ENDPOINT}/_next`,
-//         logLevel: "error",
-//         pathRewrite: (path) => {
-//             const pathSlashArr = path.split("/").filter((str) => str.length > 0);
-//             if (pathSlashArr.length <= 1) return "/";
-//             pathSlashArr.shift();
-//             return "/" + pathSlashArr.join("/");
-//         },
-
-//         ws: true,
-//         followRedirects: true,
-//     })
-// );
 
 app.use(bodyParser.json());
 app.use(
@@ -63,9 +33,7 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.get("/api/me", (req,res) => {
-    return res.json("abc")
-});
+app.get("/chat_thread/:id",chatThread);
 
 (async () => {
     app.listen(process.env.PORT, () => {
