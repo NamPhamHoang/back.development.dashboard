@@ -17,7 +17,7 @@ export const fetchUserById = async id => {
     }
 }
 
-export const fecthAndSyncUser = async id => {
+export const fetchAndSyncUser = async id => {
     const { data } = await axios.get(
         `https://www.freelancer.com/api/users/0.1/users/${id}/`,
         {

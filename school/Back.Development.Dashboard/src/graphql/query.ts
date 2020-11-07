@@ -39,3 +39,18 @@ export const FETCH_THREAD_BY_ID = gql`
     }
   }
 `;
+
+export const FETCH_OS_USER_BY_ID = gql`
+  query fetchOSUserByID($user_id: bigint!) {
+    user: outsource_user_by_pk(user_id: $user_id) {
+      user_id
+      country: _data(path: "location.country.name")
+      timezone: _data(path: "timezone.timezone")
+      username: _data(path: "username")
+      public_name: _data(path: "public_name")
+      email_verified: _data(path: "status.email_verified")
+      payment_verified: _data(path: "status.payment_verified")
+      identity_verified: _data(path: "status.identity_verified")
+    }
+  }
+`;

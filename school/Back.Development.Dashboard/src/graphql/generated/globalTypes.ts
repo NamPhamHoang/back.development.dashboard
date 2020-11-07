@@ -70,6 +70,25 @@ export enum chat_log_update_column {
 }
 
 /**
+ * unique or primary key constraints on table "chat_thread"
+ */
+export enum chat_thread_constraint {
+  chat_thread_pkey = "chat_thread_pkey",
+}
+
+/**
+ * update columns of table "chat_thread"
+ */
+export enum chat_thread_update_column {
+  board_id = "board_id",
+  customer_id = "customer_id",
+  id = "id",
+  isForward = "isForward",
+  project_id = "project_id",
+  updated_at = "updated_at",
+}
+
+/**
  * unique or primary key constraints on table "issue_member"
  */
 export enum issue_member_constraint {
@@ -399,6 +418,14 @@ export interface board_on_conflict {
 }
 
 /**
+ * input type for inserting array relation for remote table "chat_log"
+ */
+export interface chat_log_arr_rel_insert_input {
+  data: chat_log_insert_input[];
+  on_conflict?: chat_log_on_conflict | null;
+}
+
+/**
  * Boolean expression to filter rows from the table "chat_log". All fields are combined with a logical 'AND'.
  */
 export interface chat_log_bool_exp {
@@ -432,6 +459,48 @@ export interface chat_log_on_conflict {
   constraint: chat_log_constraint;
   update_columns: chat_log_update_column[];
   where?: chat_log_bool_exp | null;
+}
+
+/**
+ * Boolean expression to filter rows from the table "chat_thread". All fields are combined with a logical 'AND'.
+ */
+export interface chat_thread_bool_exp {
+  _and?: (chat_thread_bool_exp | null)[] | null;
+  _not?: chat_thread_bool_exp | null;
+  _or?: (chat_thread_bool_exp | null)[] | null;
+  board_id?: Int_comparison_exp | null;
+  customer_id?: bigint_comparison_exp | null;
+  id?: bigint_comparison_exp | null;
+  isForward?: Boolean_comparison_exp | null;
+  messages?: chat_log_bool_exp | null;
+  project?: projects_bool_exp | null;
+  project_id?: bigint_comparison_exp | null;
+  updated_at?: timestamptz_comparison_exp | null;
+  user?: outsource_user_bool_exp | null;
+}
+
+/**
+ * input type for inserting data into table "chat_thread"
+ */
+export interface chat_thread_insert_input {
+  board_id?: number | null;
+  customer_id?: any | null;
+  id?: any | null;
+  isForward?: boolean | null;
+  messages?: chat_log_arr_rel_insert_input | null;
+  project?: projects_obj_rel_insert_input | null;
+  project_id?: any | null;
+  updated_at?: any | null;
+  user?: outsource_user_obj_rel_insert_input | null;
+}
+
+/**
+ * on conflict condition type for table "chat_thread"
+ */
+export interface chat_thread_on_conflict {
+  constraint: chat_thread_constraint;
+  update_columns: chat_thread_update_column[];
+  where?: chat_thread_bool_exp | null;
 }
 
 /**
@@ -555,6 +624,14 @@ export interface outsource_user_bool_exp {
 export interface outsource_user_insert_input {
   _data?: any | null;
   user_id?: any | null;
+}
+
+/**
+ * input type for inserting object relation for remote table "outsource_user"
+ */
+export interface outsource_user_obj_rel_insert_input {
+  data: outsource_user_insert_input;
+  on_conflict?: outsource_user_on_conflict | null;
 }
 
 /**

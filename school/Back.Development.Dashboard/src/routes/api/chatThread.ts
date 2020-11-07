@@ -7,6 +7,12 @@ import {
     fetchThreadByID,
     fetchThreadByIDVariables
 } from "~@/graphql/generated/fetchThreadByID";
+import {
+    syncOSUserIfNotExisted
+} from "~@/utils/hasura";
+import {
+    insertThread
+} from "~@/boot/services/socket";
 
 export default async (req: Request, res: Response) => {  
     const threadId = req.params.id;
@@ -41,8 +47,22 @@ export default async (req: Request, res: Response) => {
             const threads = data.result.threads;
             if(threads.length > 0) {
                 const thread = threads[0];
-                
+                await syncOSUserIfNotExisted(thread.thread.owner);
+                const {
+                    data: { insert_chat_thread_one: cachedThread}
+                } = await insertThread(thread);
+                return res.json({
+                    isError: false,
+                    message: cachedThread
+                })
+            } else {
+                return res.status(400).json({
+                    isError: true,
+                    message: "Thread ID not existed"
+                });
             }
+        } else {
+            throw new Error(data.result)
         }
     }
 }

@@ -3,12 +3,17 @@ import log from "~@/utils/logger";
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import { listen } from "~@/boot/services/socket";
 import {
     TakeProject,
     chatThread
 } from "~@/routes/api"
 
 const app = express();
+
+if(process.env.IS_LISTEN_WS === "1") {
+    listen()
+}
 app.use(
     //@TODO: add to env
     cors({
@@ -16,7 +21,23 @@ app.use(
     })
 );
 
-
+app.use(
+    "/hasura",
+    createProxyMiddleware({
+      target: `${process.env.HASURA_ENDPOINT}`,
+      logLevel: "error",
+      pathRewrite: (path) => {
+        const pathSlashArr = path.split("/").filter((str) => str.length > 0);
+        if (pathSlashArr.length <= 1) return "/";
+        pathSlashArr.shift();
+        return "/" + pathSlashArr.join("/");
+      },
+  
+      ws: true,
+      followRedirects: true,
+    })
+  );
+  
 app.use(bodyParser.json());
 app.use(
     bodyParser.urlencoded({
