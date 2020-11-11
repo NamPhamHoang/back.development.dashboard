@@ -8,12 +8,13 @@ import {
     TakeProject,
     chatThread
 } from "~@/routes/api"
+import takeProjects from "~@/routes/api/takeProjects";
 
 const app = express();
 
-if(process.env.IS_LISTEN_WS === "1") {
-    listen()
-}
+// if(process.env.IS_LISTEN_WS === "1") {
+//     listen()
+// }
 app.use(
     //@TODO: add to env
     cors({
@@ -55,6 +56,7 @@ app.use((err, req, res, next) => {
 });
 
 app.get("/chat_thread/:id",chatThread);
+app.get("/projects", takeProjects);
 
 (async () => {
     app.listen(process.env.PORT, () => {

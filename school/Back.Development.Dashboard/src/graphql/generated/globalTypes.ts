@@ -148,12 +148,15 @@ export enum projects_constraint {
  * update columns of table "projects"
  */
 export enum projects_update_column {
+  confirm = "confirm",
   created_at = "created_at",
+  currency = "currency",
   exchange_rate = "exchange_rate",
   featured = "featured",
   fulltime = "fulltime",
   id = "id",
   ipcontract = "ipcontract",
+  jobStrings = "jobStrings",
   linkUrl = "linkUrl",
   maxbudget = "maxbudget",
   minbudget = "minbudget",
@@ -650,12 +653,15 @@ export interface projects_bool_exp {
   _and?: (projects_bool_exp | null)[] | null;
   _not?: projects_bool_exp | null;
   _or?: (projects_bool_exp | null)[] | null;
+  confirm?: Int_comparison_exp | null;
   created_at?: timestamptz_comparison_exp | null;
+  currency?: String_comparison_exp | null;
   exchange_rate?: Float_comparison_exp | null;
   featured?: Boolean_comparison_exp | null;
   fulltime?: Boolean_comparison_exp | null;
   id?: Int_comparison_exp | null;
   ipcontract?: Boolean_comparison_exp | null;
+  jobStrings?: String_comparison_exp | null;
   linkUrl?: String_comparison_exp | null;
   maxbudget?: Float_comparison_exp | null;
   minbudget?: Float_comparison_exp | null;
@@ -676,12 +682,15 @@ export interface projects_bool_exp {
  * input type for inserting data into table "projects"
  */
 export interface projects_insert_input {
+  confirm?: number | null;
   created_at?: any | null;
+  currency?: string | null;
   exchange_rate?: number | null;
   featured?: boolean | null;
   fulltime?: boolean | null;
   id?: number | null;
   ipcontract?: boolean | null;
+  jobStrings?: string | null;
   linkUrl?: string | null;
   maxbudget?: number | null;
   minbudget?: number | null;

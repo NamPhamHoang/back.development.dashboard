@@ -2,20 +2,37 @@ import gql from "graphql-tag";
 
 export const UPSERT_PROJECT = gql`
   mutation upsertProjects(
-      $projects: [projects_insert_input!]!
-      $projectsUpdateCollumn: [projects_update_column!]!
+    $jobs: [jobs_insert_input!]!
+    $jobsUpdateColumns: [jobs_update_column!]!
+    $projects: [projects_insert_input!]!
+    $projectsUpdateCollumn: [projects_update_column!]!
+    $projectsjobs: [projectsjobs_insert_input!]!
+  ) {
+    insert_jobs(
+      objects: $jobs
+      on_conflict: { constraint: jobs_pkey, update_columns: $jobsUpdateColumns }
     ) {
-    
-      insert_projects(
-        objects: $projects
-        on_conflict: {
-          constraint: projects_pkey
-          update_columns: $projectsUpdateCollumn
-        }
-      ) {
-        affected_rows
-      }
+      affected_rows
     }
+    insert_projects(
+      objects: $projects
+      on_conflict: {
+        constraint: projects_pkey
+        update_columns: $projectsUpdateCollumn
+      }
+    ) {
+      affected_rows
+    }
+    insert_projectsjobs(
+      objects: $projectsjobs
+      on_conflict: {
+        constraint: projectsjobs_pkey
+        update_columns: [job_id, project_id]
+      }
+    ) {
+      affected_rows
+    }
+  }
 `;
 
 export const UPSERT_OUTSOURCE_USER = gql`
