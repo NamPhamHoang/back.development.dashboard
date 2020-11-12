@@ -12,9 +12,9 @@ import takeProjects from "~@/routes/api/takeProjects";
 
 const app = express();
 
-// if(process.env.IS_LISTEN_WS === "1") {
-//     listen()
-// }
+if(process.env.IS_LISTEN_WS === "1") {
+    listen()
+}
 app.use(
     //@TODO: add to env
     cors({

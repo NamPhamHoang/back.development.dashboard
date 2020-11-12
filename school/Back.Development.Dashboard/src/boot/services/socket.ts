@@ -18,6 +18,14 @@ const onClose = () => {
     console.log("retry connect");
     listen();
 }
+
+const onUserTyping = body => {
+    console.log("on user typing message");
+  };
+  
+  const onUserRead = body => {
+    console.log("on user read message");
+  };
 export const insertThread = async thread => 
     hsrClient.mutate<upsertThread, upsertThreadVariables>({
         mutation: INSERT_THREAD,
@@ -49,21 +57,23 @@ const deliveryResponse = message => {
     const msg = JSON.parse(message);
     if(msg.channel === "user") {
         const { body:data } = msg;
+        console.log(data)
         switch(data.type) {
             case "private": {
                 return onCustomerReply(data);
             }
-            // case "typing": {
-            //     return onUserTyping(data);
-            // }
-            // case "user_read": {
-            //     return onUserRead(data);
-            // }
+            case "typing": {
+                return onUserTyping(data);
+            }
+            case "user_read": {
+                return onUserRead(data);
+            }
         }
     }
 }
 export const listen = () => {
     const sock = new SockJS("https://notifications.freelancer.com");
+   
     sock.onopen = () => {
         console.log("init socket");
         const autheticate = () => {
@@ -71,7 +81,9 @@ export const listen = () => {
                 JSON.stringify({
                     channel: "auth",
                     body: {
-                        user_id: 26076146
+                        user_id: 50562889,
+                        hash2: process.env.HASH_V2,
+
                     }
                 })
             )
@@ -84,7 +96,6 @@ export const listen = () => {
     }
     sock.onclose = error => {
         console.log("Socket closed because", error);
-        console.log(error)
         onClose();
     }
 }
