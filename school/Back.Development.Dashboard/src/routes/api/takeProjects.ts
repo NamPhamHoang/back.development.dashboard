@@ -10,7 +10,7 @@ import {
 } from "~@/graphql/generated/fetchJobs";
 import hsrClient from "~@/modules/hasura.module";
 import { projects_update_column } from "~@/graphql/generated/globalTypes";
-
+import http from "~@/modules/http.module";
 export default async (req: Request, res: Response) => {    
     try {
         // let jobsTotal = ""
@@ -23,11 +23,7 @@ export default async (req: Request, res: Response) => {
         //     jobsTotal = jobsTotal + `&jobs%5B%5D=${job.id}`
         // })
         const projectUrl = `https://www.freelancer.com/ajax/notify/live-feed/pre-populated.php`
-        const { data } = await axios.get(projectUrl, {
-            headers: {
-                'freelancer-oauth-v1': process.env.FREELANCE_TOKEN
-            }
-        })
+        const { data } = await http.axios.get(projectUrl)
         console.log(data)
         // const insertData = projects.map(project => {
         //     return {

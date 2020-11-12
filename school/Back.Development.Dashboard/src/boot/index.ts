@@ -19,14 +19,14 @@ const services = [
         : path.join(__dirname, "./services/api.ts"),
     isEnable: Number(process.env.ENABLE_API) === 1,
   },
-  // {
-  //   uid: "auto_fetch_project",
-  //   path:
-  //     process.env.NODE_ENV === "production"
-  //       ? path.join(__dirname, "./services/auto_fetch_project.js")
-  //       : path.join(__dirname, "./services/auto_fetch_project.ts"),
-  //   isEnable: Number(process.env.ENABLE_FETCH) === 1,
-  // },
+  {
+    uid: "auto_fetch_project",
+    path:
+      process.env.NODE_ENV === "production"
+        ? path.join(__dirname, "./services/auto_fetch_projects.js")
+        : path.join(__dirname, "./services/auto_fetch_projects.ts"),
+    isEnable: Number(process.env.ENABLE_FETCH) === 1,
+  },
 ];
 
 export default async () => {
