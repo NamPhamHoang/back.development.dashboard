@@ -9,7 +9,9 @@ import {
     chatThread
 } from "~@/routes/api"
 import takeProjects from "~@/routes/api/takeProjects";
-
+import qs from "qs";
+import moment from "moment";
+import http from "~@/modules/http.module";
 const app = express();
 
 if(process.env.IS_LISTEN_WS === "1") {
@@ -57,6 +59,35 @@ app.use((err, req, res, next) => {
 
 app.get("/chat_thread/:id",chatThread);
 app.get("/projects", takeProjects);
+app.post("/message/:thread_id", async (req,res) => {
+    const threadID = req.params.thread_id;
+  const message = req.body.message;
+  console.log(message, threadID);
+  try {
+    const { data } = await http.axios.post(
+      `https://www.freelancer.com/api/messages/0.1/threads/${threadID}/messages/?compact=true&new_errors=true`,
+      qs.stringify({
+        message,
+        source: "chat_box"
+      }),
+      {
+        headers: {
+          "content-type": "application/x-www-form-urlencoded;charset=UTF-8"
+        }
+      }
+    );
+    return res.json({
+      isError: false,
+      message: data,
+      client_message_id: moment.utc().format("X")
+    });
+  } catch (err) {
+    res.status(500).send({
+      isError: true,
+      message: err.toString()
+    });
+  }
+});
 
 (async () => {
     app.listen(process.env.PORT, () => {

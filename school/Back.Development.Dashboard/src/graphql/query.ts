@@ -54,3 +54,49 @@ export const FETCH_OS_USER_BY_ID = gql`
     }
   }
 `;
+
+export const FETCH_PROJECT_BY_ID = gql`
+  query fetchProjectById($projectId: Int!) {
+    projects(where: { id: { _eq: $projectId } }) {
+      jobs: projectsjobs {
+        job {
+          id
+          title
+        }
+      }
+     id
+     title
+     text
+     userId
+     status
+     our_cost
+     featured
+     maxbudget
+     minbudget
+     linkUrl
+     exchange_rate
+     nonpublic
+     ipcontract
+     nda
+     confirm
+     submitdate
+     fulltime
+     userName
+     created_at
+     updated_at
+    }
+  }
+`
+
+export const FETCH_FILTER_SETTINGS = gql`
+  query fetchFilterSettings {
+    ignoredSkills: jobs(where: {isIgnored: {_eq: true}}) {
+      id
+      title
+    }
+  caredSkills: jobs(where: {isIgnored: {_eq: false}}) {
+      id
+      title
+    }
+  }
+`

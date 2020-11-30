@@ -1,8 +1,12 @@
 import _ from "lodash";
 import http from "~@/modules/http.module";
 import errorHandling from "~@/modules/error.module";
-
 import logger from "~@/modules/log.module";
+import {
+    saveProjects,
+    fetchProjects,
+    filterProjects
+} from "~@/utils/functions";
 import { IFLProject, DeepPartial, ILocalProject, ILocalProjectAddFields, IFLResponse } from "~@/types";
 import { FLResponseStatus, PROJECT_CONFIRM_TYPE } from "~@/constant";
 const defaultSerializeOps: ILocalProjectAddFields = {
@@ -65,14 +69,10 @@ const serializeProjects = (projects: IFLProject[]) => {
 
 export const SCRIPT_CONTENT = async () => {
     logger.info("Script: %s is starting", "fetch project");
-    const { data } = await http.axios.get<IFLResponse<IFLProject[]>>("https://www.freelancer.com/ajax/notify/live-feed/pre-populated.php")
-    if(data.result === FLResponseStatus.SUCCESS) {
-        const rawProjects = data.data;
-        
-    } else {
-
-    }
-    return [];
+    const rawProjects = await fetchProjects();
+    const projects = serializeProjects(await filterProjects(rawProjects));
+    await saveProjects(projects);
+    
 }
 
 (async () => {
