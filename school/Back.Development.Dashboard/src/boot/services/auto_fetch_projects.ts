@@ -16,7 +16,7 @@ const defaultSerializeOps: ILocalProjectAddFields = {
     our_cost: null,
     our_cover_letter: null
 }
-const serializeProject = (
+export const serializeProject = (
     project: IFLProject,
     opts: DeepPartial<ILocalProjectAddFields> = defaultSerializeOps
 ): ILocalProject => {

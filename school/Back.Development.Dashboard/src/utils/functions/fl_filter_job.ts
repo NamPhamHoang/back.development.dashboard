@@ -1,6 +1,8 @@
 import gqlClient from "~@/modules/hasura.module";
 import {
-    isExist
+    isExist,
+    isSkill,
+    isGoodBudget
 } from "~@/utils/functions/filters";
 import { IFLProject } from "~@/types";
 import { FETCH_FILTER_SETTINGS } from "~@/graphql/query"
@@ -8,13 +10,15 @@ import {
     fetchFilterSettings,
 } from "~@/graphql/generated/fetchFilterSettings"
 const defaultFilter = [
-    isExist
+    // isExist,
+    isSkill,
+    // isGoodBudget
 ]
 
 const FILTER_SETING = {
     max_budget:8000,
     min_budget:10,
-    exchange_rate: 0.5,
+    exchange_rate: 1,
     description_length: 100
 }
 export default async (

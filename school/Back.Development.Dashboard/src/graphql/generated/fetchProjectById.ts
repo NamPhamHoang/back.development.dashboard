@@ -37,12 +37,12 @@ export interface fetchProjectById_projects {
   maxbudget: number | null;
   minbudget: number | null;
   linkUrl: string;
-  exchange_rate: number | null;
+  exchangerate: number | null;
   nonpublic: boolean | null;
   ipcontract: boolean | null;
   nda: boolean | null;
   confirm: number | null;
-  submitdate: any | null;
+  submitDate: any | null;
   fulltime: boolean | null;
   userName: string;
   created_at: any;

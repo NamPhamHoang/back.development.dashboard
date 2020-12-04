@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-export const UPSERT_PROJECT = gql`
+export const UPSERT_PROJECTS = gql`
   mutation upsertProjects(
     $jobs: [jobs_insert_input!]!
     $jobsUpdateColumns: [jobs_update_column!]!
@@ -98,3 +98,14 @@ export const INSERT_THREAD = gql `
     }
   }
 `
+
+export const INSERT_CHAT_ATTACHMENT = gql`
+  mutation insertChatAttachMent(
+    $object: chat_attachment_insert_input!
+    $conflict: chat_attachment_on_conflict
+  ) {
+    insert_chat_attachment_one(object: $object, on_conflict: $conflict) {
+      message_id
+    }
+  }
+`;

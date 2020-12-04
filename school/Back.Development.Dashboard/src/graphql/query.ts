@@ -74,12 +74,12 @@ export const FETCH_PROJECT_BY_ID = gql`
      maxbudget
      minbudget
      linkUrl
-     exchange_rate
+     exchangerate
      nonpublic
      ipcontract
      nda
      confirm
-     submitdate
+     submitDate
      fulltime
      userName
      created_at

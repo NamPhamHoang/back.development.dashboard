@@ -10,9 +10,15 @@ import {
 } from "~@/graphql/generated/upsertThread";
 import {
     chat_thread_constraint,
-    chat_thread_update_column
+    chat_thread_update_column,
+    chat_attachment_constraint,
+    chat_attachment_update_column
 } from "~@/graphql/generated/globalTypes";
-import { INSERT_THREAD } from "~@/graphql/mutation";
+import {
+    insertChatAttachMent,
+    insertChatAttachMentVariables
+} from "~@/graphql/generated/insertChatAttachMent";
+import { INSERT_CHAT_ATTACHMENT ,INSERT_THREAD } from "~@/graphql/mutation";
 
 const onClose = () => {
     console.log("retry connect");
@@ -26,6 +32,25 @@ const onUserTyping = body => {
   const onUserRead = body => {
     console.log("on user read message");
   };
+
+const onUserUploadAttachMent = body => {
+    hsrClient.mutate<insertChatAttachMent, insertChatAttachMentVariables>({
+        mutation: INSERT_CHAT_ATTACHMENT,
+        variables: {
+          object: {
+            _data: body,
+            message_id: body.data.message_id,
+            thread_id: body.data.thread_id,
+            user_id: body.data.from_user
+          },
+          conflict: {
+            constraint: chat_attachment_constraint.chat_attachment_pkey,
+            update_columns: [chat_attachment_update_column._data]
+          }
+        }
+      });
+      console.log("on user upload attachment");
+}
 export const insertThread = async thread => 
     hsrClient.mutate<upsertThread, upsertThreadVariables>({
         mutation: INSERT_THREAD,
@@ -68,6 +93,9 @@ const deliveryResponse = message => {
             case "user_read": {
                 return onUserRead(data);
             }
+            case "attach": {
+                return onUserUploadAttachMent(data);
+              }
         }
     }
 }

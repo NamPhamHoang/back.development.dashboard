@@ -51,6 +51,24 @@ export enum board_update_column {
 }
 
 /**
+ * unique or primary key constraints on table "chat_attachment"
+ */
+export enum chat_attachment_constraint {
+  chat_attachment_pkey = "chat_attachment_pkey",
+}
+
+/**
+ * update columns of table "chat_attachment"
+ */
+export enum chat_attachment_update_column {
+  _data = "_data",
+  created_at = "created_at",
+  message_id = "message_id",
+  thread_id = "thread_id",
+  user_id = "user_id",
+}
+
+/**
  * unique or primary key constraints on table "chat_log"
  */
 export enum chat_log_constraint {
@@ -148,26 +166,45 @@ export enum projects_constraint {
  * update columns of table "projects"
  */
 export enum projects_update_column {
+  actionText = "actionText",
+  appended_descr = "appended_descr",
+  bidError = "bidError",
+  buyer = "buyer",
   confirm = "confirm",
   created_at = "created_at",
   currency = "currency",
-  exchange_rate = "exchange_rate",
+  currencyCode = "currencyCode",
+  exchangerate = "exchangerate",
+  extended = "extended",
   featured = "featured",
+  free_bid_until = "free_bid_until",
   fulltime = "fulltime",
+  hidebids = "hidebids",
   id = "id",
+  imgUrl = "imgUrl",
   ipcontract = "ipcontract",
-  jobStrings = "jobStrings",
+  isBid = "isBid",
+  jobString = "jobString",
+  lastSync = "lastSync",
   linkUrl = "linkUrl",
+  listed = "listed",
   maxbudget = "maxbudget",
   minbudget = "minbudget",
   nda = "nda",
   nonpublic = "nonpublic",
   our_cost = "our_cost",
+  our_cover_letter = "our_cover_letter",
+  projIsHourly = "projIsHourly",
+  recruiter = "recruiter",
   status = "status",
-  submitdate = "submitdate",
+  submitDate = "submitDate",
+  tags = "tags",
   text = "text",
+  time = "time",
   title = "title",
+  type = "type",
   updated_at = "updated_at",
+  urgent = "urgent",
   userId = "userId",
   userName = "userName",
 }
@@ -421,6 +458,40 @@ export interface board_on_conflict {
 }
 
 /**
+ * Boolean expression to filter rows from the table "chat_attachment". All fields are combined with a logical 'AND'.
+ */
+export interface chat_attachment_bool_exp {
+  _and?: (chat_attachment_bool_exp | null)[] | null;
+  _data?: jsonb_comparison_exp | null;
+  _not?: chat_attachment_bool_exp | null;
+  _or?: (chat_attachment_bool_exp | null)[] | null;
+  created_at?: timestamptz_comparison_exp | null;
+  message_id?: bigint_comparison_exp | null;
+  thread_id?: Int_comparison_exp | null;
+  user_id?: bigint_comparison_exp | null;
+}
+
+/**
+ * input type for inserting data into table "chat_attachment"
+ */
+export interface chat_attachment_insert_input {
+  _data?: any | null;
+  created_at?: any | null;
+  message_id?: any | null;
+  thread_id?: number | null;
+  user_id?: any | null;
+}
+
+/**
+ * on conflict condition type for table "chat_attachment"
+ */
+export interface chat_attachment_on_conflict {
+  constraint: chat_attachment_constraint;
+  update_columns: chat_attachment_update_column[];
+  where?: chat_attachment_bool_exp | null;
+}
+
+/**
  * input type for inserting array relation for remote table "chat_log"
  */
 export interface chat_log_arr_rel_insert_input {
@@ -653,27 +724,46 @@ export interface projects_bool_exp {
   _and?: (projects_bool_exp | null)[] | null;
   _not?: projects_bool_exp | null;
   _or?: (projects_bool_exp | null)[] | null;
+  actionText?: String_comparison_exp | null;
+  appended_descr?: String_comparison_exp | null;
+  bidError?: String_comparison_exp | null;
+  buyer?: Int_comparison_exp | null;
   confirm?: Int_comparison_exp | null;
   created_at?: timestamptz_comparison_exp | null;
   currency?: String_comparison_exp | null;
-  exchange_rate?: Float_comparison_exp | null;
+  currencyCode?: String_comparison_exp | null;
+  exchangerate?: Float_comparison_exp | null;
+  extended?: Boolean_comparison_exp | null;
   featured?: Boolean_comparison_exp | null;
+  free_bid_until?: Int_comparison_exp | null;
   fulltime?: Boolean_comparison_exp | null;
+  hidebids?: Boolean_comparison_exp | null;
   id?: Int_comparison_exp | null;
+  imgUrl?: String_comparison_exp | null;
   ipcontract?: Boolean_comparison_exp | null;
-  jobStrings?: String_comparison_exp | null;
+  isBid?: Boolean_comparison_exp | null;
+  jobString?: String_comparison_exp | null;
+  lastSync?: timestamptz_comparison_exp | null;
   linkUrl?: String_comparison_exp | null;
+  listed?: Boolean_comparison_exp | null;
   maxbudget?: Float_comparison_exp | null;
   minbudget?: Float_comparison_exp | null;
   nda?: Boolean_comparison_exp | null;
   nonpublic?: Boolean_comparison_exp | null;
   our_cost?: Float_comparison_exp | null;
+  our_cover_letter?: String_comparison_exp | null;
+  projIsHourly?: Boolean_comparison_exp | null;
   projectsjobs?: projectsjobs_bool_exp | null;
+  recruiter?: Boolean_comparison_exp | null;
   status?: String_comparison_exp | null;
-  submitdate?: timestamp_comparison_exp | null;
+  submitDate?: timestamp_comparison_exp | null;
+  tags?: jsonb_comparison_exp | null;
   text?: String_comparison_exp | null;
+  time?: Int_comparison_exp | null;
   title?: String_comparison_exp | null;
+  type?: String_comparison_exp | null;
   updated_at?: timestamptz_comparison_exp | null;
+  urgent?: Boolean_comparison_exp | null;
   userId?: Int_comparison_exp | null;
   userName?: String_comparison_exp | null;
 }
@@ -682,27 +772,46 @@ export interface projects_bool_exp {
  * input type for inserting data into table "projects"
  */
 export interface projects_insert_input {
+  actionText?: string | null;
+  appended_descr?: string | null;
+  bidError?: string | null;
+  buyer?: number | null;
   confirm?: number | null;
   created_at?: any | null;
   currency?: string | null;
-  exchange_rate?: number | null;
+  currencyCode?: string | null;
+  exchangerate?: number | null;
+  extended?: boolean | null;
   featured?: boolean | null;
+  free_bid_until?: number | null;
   fulltime?: boolean | null;
+  hidebids?: boolean | null;
   id?: number | null;
+  imgUrl?: string | null;
   ipcontract?: boolean | null;
-  jobStrings?: string | null;
+  isBid?: boolean | null;
+  jobString?: string | null;
+  lastSync?: any | null;
   linkUrl?: string | null;
+  listed?: boolean | null;
   maxbudget?: number | null;
   minbudget?: number | null;
   nda?: boolean | null;
   nonpublic?: boolean | null;
   our_cost?: number | null;
+  our_cover_letter?: string | null;
+  projIsHourly?: boolean | null;
   projectsjobs?: projectsjobs_arr_rel_insert_input | null;
+  recruiter?: boolean | null;
   status?: string | null;
-  submitdate?: any | null;
+  submitDate?: any | null;
+  tags?: any | null;
   text?: string | null;
+  time?: number | null;
   title?: string | null;
+  type?: string | null;
   updated_at?: any | null;
+  urgent?: boolean | null;
   userId?: number | null;
   userName?: string | null;
 }

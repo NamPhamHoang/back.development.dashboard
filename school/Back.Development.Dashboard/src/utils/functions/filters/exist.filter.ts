@@ -15,7 +15,7 @@ export default async (projects: IFLProject[]) => {
             if(!isExisted) {
                 unSaveProject.push(project);
             }
-            return
+            return;
         })
     )
     return unSaveProject;
