@@ -12,6 +12,7 @@ import qs from "qs";
 import moment from "moment";
 import http from "~@/modules/http.module";
 import multer from "multer";
+import fs from "fs";
 import { fetchFullProjectInformation } from "~@/utils/freelancer";
 const app = express();
 const tempUpload = multer({
@@ -149,8 +150,9 @@ app.get("/full_project/:project_id", async (req, res) => {
       appended_descr: data.preview_description,
       status: data.status,
       created_at: data.submitdate,
-      currency: data.currency.code
-    }
+      currency: data.currency.code,
+      jobs: data.jobs
+    };
     return res.json({
       isError: false,
       message: parseData
