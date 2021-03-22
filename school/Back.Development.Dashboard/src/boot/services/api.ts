@@ -14,10 +14,15 @@ import http from "~@/modules/http.module";
 import multer from "multer";
 import fs from "fs";
 import { fetchFullProjectInformation } from "~@/utils/freelancer";
+import csv from "csv-parse";
+import path from "path";
+import Upload from "../../config/file.config";
+
 const app = express();
 const tempUpload = multer({
   storage: multer.memoryStorage()
 });
+
 if (process.env.IS_LISTEN_WS === "1") {
   listen()
 }
@@ -238,6 +243,60 @@ app.post("/message-attachment/:thread_id", tempUpload.single("file"), async (req
     });
   }
 });
+
+/**
+ * [POST] import single CSV file to generate tasks already launched
+ * 
+ * @param <File> file.csv
+ * @returns <2d Array> row[[col], [col], [col]]
+ */
+app.post('/import/csv', Upload.single("file"), async (req, res) => {
+  try {
+    let csvRows = [];
+    let file = (req as any).file;
+    console.log(req);
+    
+    if (!file) {
+      return res.status(400).json({
+        isError: true,
+        message: 'file is not uploaded!'
+      });
+    }
+
+    if (path.extname(file.originalname) !== '.csv') {
+      return res.status(400).json({
+        isError: true,
+        message: 'file is not supported!'
+      });
+    }
+
+    await fs.createReadStream(file.path, {encoding: "utf-8"})
+    .on('error', (err) => {
+      return res.status(500).json({
+        isError: true,
+        message: 'Parsing file error!'
+      });
+    }).pipe(csv())
+    .on('data', (row) => {
+      csvRows.push(row);
+    })
+    .on('end', () => {
+      return res.status(200).json({
+        isError: false,
+        rows: csvRows,
+        message: 'File is imported successfully!'
+      })
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      isError: true,
+      message: error.toString()
+    });
+  }
+});
+
 (async () => {
   app.listen(process.env.PORT, () => {
     log.info(`> web application is runnning on PORT: ${process.env.PORT}`, {
