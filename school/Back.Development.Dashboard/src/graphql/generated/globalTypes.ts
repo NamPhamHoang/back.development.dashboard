@@ -395,7 +395,7 @@ export interface board_issue_bool_exp {
   deadline?: time_comparison_exp | null;
   description?: String_comparison_exp | null;
   id?: String_comparison_exp | null;
-  issue_members?: issue_member_bool_exp | null;
+  members?: issue_member_bool_exp | null;
   order?: Int_comparison_exp | null;
   prLink?: String_comparison_exp | null;
   status?: String_comparison_exp | null;
@@ -414,7 +414,7 @@ export interface board_issue_insert_input {
   deadline?: any | null;
   description?: string | null;
   id?: string | null;
-  issue_members?: issue_member_arr_rel_insert_input | null;
+  members?: issue_member_arr_rel_insert_input | null;
   order?: number | null;
   prLink?: string | null;
   status?: string | null;
@@ -595,8 +595,8 @@ export interface issue_member_bool_exp {
   board_issue?: board_issue_bool_exp | null;
   id?: Int_comparison_exp | null;
   issue_id?: String_comparison_exp | null;
+  member?: users_bool_exp | null;
   member_id?: Int_comparison_exp | null;
-  user?: users_bool_exp | null;
 }
 
 /**
@@ -606,8 +606,8 @@ export interface issue_member_insert_input {
   board_issue?: board_issue_obj_rel_insert_input | null;
   id?: number | null;
   issue_id?: string | null;
+  member?: users_obj_rel_insert_input | null;
   member_id?: number | null;
-  user?: users_obj_rel_insert_input | null;
 }
 
 /**

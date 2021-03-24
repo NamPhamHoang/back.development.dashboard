@@ -13,10 +13,26 @@ export interface fetchFilterSettings_ignoredSkills {
   title: string;
 }
 
-export interface fetchFilterSettings_caredSkills {
+export interface fetchFilterSettings_caredSkills_user_skills_job {
   __typename: "jobs";
-  id: number;
   title: string;
+  id: number;
+}
+
+export interface fetchFilterSettings_caredSkills_user_skills {
+  __typename: "user_skill";
+  /**
+   * An object relationship
+   */
+  job: fetchFilterSettings_caredSkills_user_skills_job;
+}
+
+export interface fetchFilterSettings_caredSkills {
+  __typename: "users";
+  /**
+   * An array relationship
+   */
+  user_skills: fetchFilterSettings_caredSkills_user_skills[];
 }
 
 export interface fetchFilterSettings {
@@ -25,7 +41,7 @@ export interface fetchFilterSettings {
    */
   ignoredSkills: fetchFilterSettings_ignoredSkills[];
   /**
-   * fetch data from the table: "jobs"
+   * fetch data from the table: "users"
    */
   caredSkills: fetchFilterSettings_caredSkills[];
 }

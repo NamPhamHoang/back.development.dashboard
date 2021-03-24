@@ -3,7 +3,7 @@ import log from "~@/utils/logger";
 import express from "express";
 import request from "request";
 import cors from "cors";
-import bodyParser from "body-parser";
+import bodyParser, { raw } from "body-parser";
 import { listen } from "~@/boot/services/socket";
 import {
   chatThread
@@ -14,6 +14,7 @@ import http from "~@/modules/http.module";
 import multer from "multer";
 import fs from "fs";
 import { fetchFullProjectInformation } from "~@/utils/freelancer";
+import { sendEmail } from "~@/modules/email.module";
 const app = express();
 const tempUpload = multer({
   storage: multer.memoryStorage()
@@ -186,7 +187,6 @@ app.get("/attachment/:message_id/:file", async (req, res) => {
 
 app.get("/attachment/", async (req, res) => {
   const { url } = req.query;
-  console.log(url)
   try {
     const { data } = await http.axios.get(("http://" + url) as string, {
       responseType: "arraybuffer"
@@ -200,6 +200,50 @@ app.get("/attachment/", async (req, res) => {
   }
 });
 
+app.post("/create-thread", async (req, res) => {
+  const {
+    userId,
+    projectId,
+    ownerId,
+  } = req.body
+  try {
+    const {
+      // @ts-ignore
+      thread: { context: {id} }
+    } = await http.axios.post(`https://www.freelancer.com/api/messages/0.1/threads/?members[]=${ownerId}&members[]=${userId}&context_type=project&context=${projectId}`)
+    console.log(id)
+    // http.axios.post(`/message/${id}`, qs.stringify({
+    //   message: "Hey, I'm interested in your project. Please send me a message so that we can discuss more."
+    // }))
+  }
+  catch (err) {
+    res.status(500).send({
+      isError: false,
+      message: err.toString()
+    })
+  }
+});
+
+app.post("/send-email" , async (req, res) => {
+  try {
+    const {
+      email, title, project_name, task_id, task_name, member_name, finish_time, deadline
+    } = req.body
+    console.log(req.body)
+      sendEmail(email,title,project_name, task_id, task_name, member_name, finish_time, deadline);
+      return res.json({
+        isError: false,
+        payload: "SendEmail Successful"
+      });
+    
+  } catch (err) {
+    return res.status(400).json({
+      isError: true,
+      payload: "Cannot send email"
+    })
+  }
+  
+});
 
 app.post("/message-attachment/:thread_id", tempUpload.single("file"), async (req, res) => {
   const threadID = req.params.thread_id;

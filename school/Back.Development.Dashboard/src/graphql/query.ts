@@ -94,9 +94,13 @@ export const FETCH_FILTER_SETTINGS = gql`
       id
       title
     }
-  caredSkills: jobs(where: {isIgnored: {_eq: false}}) {
-      id
-      title
+    caredSkills: users(where: { status: { _eq: "online" } }) {
+      user_skills {
+        job {
+          title
+          id
+        }
+      }
     }
   }
 `

@@ -25,17 +25,23 @@ export default async (
     projects: IFLProject[],
     filter: any[] = defaultFilter
 ): Promise<IFLProject[]> => {
+    let ignoredSkillsId
+    let caredSkillsId
     const {
         data: {ignoredSkills, caredSkills}
     } = await gqlClient.query<fetchFilterSettings>({
         query: FETCH_FILTER_SETTINGS
     });
-    const caredSkillsId = caredSkills.map(skill => {
-        return skill.id
-    })
-    const ignoredSkillsId = ignoredSkills.map(skill => {
-        return skill.id
-    })
+    if(ignoredSkills.length > 0) {
+        ignoredSkillsId = ignoredSkills.map(skill => {
+            return skill.id
+        })
+    }
+    if(caredSkills.length>0) {
+        caredSkillsId = caredSkills[0].user_skills.map(skill => {
+            return skill.job.id
+        })
+    }
     const settings = {
         FILTER_SETING,
         caredSkillsId,

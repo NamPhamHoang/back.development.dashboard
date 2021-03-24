@@ -6,6 +6,7 @@
   "scripts": {
     "codegen": "env NODE_ENV=development apollo client:codegen --config=src/graphql/apollo.config.js --target=typescript --tagName=gql --outputFlat src/graphql/generated",
     "dev": "env NODE_ENV=development nodemon",
+    "test": "jest",
     "start": "env NODE_ENV=production node -r ./dotenv.config -r module-alias/register dist/index.js",
     "start:bg": "env NODE_ENV=production forever start dist/index.js",
     "stop:bg": "forever stopall",
@@ -21,6 +22,7 @@
     "deploy:build": "npm run build && docker-compose -f docker-compose.prod.yml build app"
   },
   "dependencies": {
+    "@emotion/core": "^11.0.0",
     "@sendgrid/mail": "^7.2.3",
     "@sentry/node": "5.15.5",
     "@types/jsonwebtoken": "^8.3.5",
