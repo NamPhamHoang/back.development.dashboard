@@ -39,6 +39,7 @@ class HttpModule {
           "Cache-Control": "no-cache",
           Connection: "keep-alive",
           Cookie: process.env.FREELANCER_COOKIE,
+          "freelancer-oauth-v1": process.env.FREELANCER_TOKEN,
           Pragma: "no-cache",
           "Upgrade-Insecure-Requests": 1,
         };

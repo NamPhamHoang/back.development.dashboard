@@ -15,6 +15,7 @@ import multer from "multer";
 import fs from "fs";
 import { fetchFullProjectInformation } from "~@/utils/freelancer";
 import { sendEmail } from "~@/modules/email.module";
+import axios from "axios";
 const app = express();
 const tempUpload = multer({
   storage: multer.memoryStorage()
@@ -244,6 +245,37 @@ app.post("/send-email" , async (req, res) => {
   }
   
 });
+
+//bidding project
+app.post("/bidding-project", async (req, res) => {
+  const {
+    project_id,
+    bidder_id,
+    amount,
+    period,
+    milestone_percentage
+  } = req.body
+  try {
+    const {
+      status,
+      data
+    } = await http.axios.post(
+      `https://www.freelancer.com/api/projects/0.1/bids/`,
+      {
+        project_id,
+        bidder_id,
+        amount,
+        period,
+        milestone_percentage
+      })
+  } catch (err) {
+    res.status(500).send({
+      isError: true,
+      message: err.toString()
+    });
+  }
+ 
+})
 
 app.post("/message-attachment/:thread_id", tempUpload.single("file"), async (req, res) => {
   const threadID = req.params.thread_id;

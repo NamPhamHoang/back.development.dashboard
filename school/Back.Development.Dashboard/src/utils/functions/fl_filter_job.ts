@@ -12,7 +12,7 @@ import {
 const defaultFilter = [
     // isExist,
     isSkill,
-    // isGoodBudget
+    isGoodBudget
 ]
 
 const FILTER_SETING = {
@@ -36,6 +36,7 @@ export default async (
         ignoredSkillsId = ignoredSkills.map(skill => {
             return skill.id
         })
+        
     }
     if(caredSkills.length>0) {
         caredSkillsId = caredSkills[0].user_skills.map(skill => {
@@ -52,6 +53,7 @@ export default async (
         settings,
         ... filter
     )
+    console.log(newProjects)
     return newProjects
 }
 
