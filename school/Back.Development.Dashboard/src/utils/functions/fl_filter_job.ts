@@ -53,7 +53,6 @@ export default async (
         settings,
         ... filter
     )
-    console.log(newProjects)
     return newProjects
 }
 

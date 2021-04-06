@@ -3,7 +3,7 @@ import log from "~@/utils/logger";
 import express from "express";
 import request from "request";
 import cors from "cors";
-import bodyParser, { raw } from "body-parser";
+import bodyParser from "body-parser";
 import { listen } from "~@/boot/services/socket";
 import {
   chatThread
@@ -12,10 +12,17 @@ import qs from "qs";
 import moment from "moment";
 import http from "~@/modules/http.module";
 import multer from "multer";
-import fs from "fs";
+
 import { fetchFullProjectInformation } from "~@/utils/freelancer";
 import { sendEmail } from "~@/modules/email.module";
-import axios from "axios";
+
+import gqlClient from "~@/modules/hasura.module";
+import getSuggestion from "~@/utils/functions/fl_bid_job";
+import { FETCH_PROJECT_BY_ID } from "~@/graphql/query";
+import {
+  fetchProjectById,
+  fetchProjectByIdVariables
+} from "~@/graphql/generated/fetchProjectById";
 const app = express();
 const tempUpload = multer({
   storage: multer.memoryStorage()
@@ -255,27 +262,66 @@ app.post("/bidding-project", async (req, res) => {
     period,
     milestone_percentage
   } = req.body
-  try {
-    const {
-      status,
-      data
-    } = await http.axios.post(
-      `https://www.freelancer.com/api/projects/0.1/bids/`,
-      {
-        project_id,
-        bidder_id,
-        amount,
-        period,
-        milestone_percentage
-      })
-  } catch (err) {
-    res.status(500).send({
-      isError: true,
-      message: err.toString()
-    });
-  }
+  console.log(req.body)
+  // try {
+  //   const {
+  //     status,
+  //     data
+  //   } = await http.axios.post(
+  //     `https://www.freelancer.com/api/projects/0.1/bids/`,
+  //     {
+  //       project_id,
+  //       bidder_id,
+  //       amount,
+  //       period,
+  //       milestone_percentage
+  //     })
+  // } catch (err) {
+  //   res.status(500).send({
+  //     isError: true,
+  //     message: err.toString()
+  //   });
+  // }
  
 })
+
+
+app.get("/hint/:pid", async (req, res) => {
+  const projectID = req.params.pid;
+  if (!projectID) {
+    return res.status(403).json({
+      error: true,
+      message: "Please specific project id"
+    });
+  }
+
+  const {
+    data: { projects }
+  } = await gqlClient.query<
+    fetchProjectById,
+    fetchProjectByIdVariables
+  >({
+    query: FETCH_PROJECT_BY_ID,
+    variables: {
+      projectId: Number(projectID)
+    }
+  });
+
+  if (projects.length <= 0) {
+    return res.status(404).json({
+      error: true,
+      message: "Project Not found"
+    });
+  }
+  const project = projects[0];
+
+  // @ts-ignore
+  const suggestion = await getSuggestion(project);
+  return res.json({
+    eror: false,
+    message: suggestion
+  });
+});
 
 app.post("/message-attachment/:thread_id", tempUpload.single("file"), async (req, res) => {
   const threadID = req.params.thread_id;
