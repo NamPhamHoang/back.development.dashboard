@@ -364,11 +364,20 @@ app.post("/bid/:pid", async (req,res) => {
   const serializeProjects = await fetchRequireBidData(projects);
   const project = serializeProjects.projects[0]
   // @ts-ignore
-  const suggestion = await biddingProject(project, our_cover_letter, our_cost);
-  // return res.json({
-  //   eror: false,
-  //   message: suggestion
-  // });
+  biddingProject(project, our_cover_letter, our_cost)
+  .then(data => {
+    return res.status(200).json({
+      error: false,
+      message: data
+    })
+  })
+  .catch(err => {
+    return res.status(500).json({
+      error: true,
+      message: err
+    })
+  })
+  ;
 })
 app.post("/message-attachment/:thread_id", tempUpload.single("file"), async (req, res) => {
   const threadID = req.params.thread_id;
