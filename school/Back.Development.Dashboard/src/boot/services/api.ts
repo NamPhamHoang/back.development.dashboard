@@ -17,12 +17,16 @@ import { fetchFullProjectInformation } from "~@/utils/freelancer";
 import { sendEmail } from "~@/modules/email.module";
 
 import gqlClient from "~@/modules/hasura.module";
-import getSuggestion from "~@/utils/functions/fl_bid_job";
+import { getSuggestion } from "~@/utils/functions/fl_bid_job";
+import biddingProject from "~@/utils/functions/fl_bid_job";
 import { FETCH_PROJECT_BY_ID } from "~@/graphql/query";
 import {
   fetchProjectById,
   fetchProjectByIdVariables
 } from "~@/graphql/generated/fetchProjectById";
+import {
+  fetchRequireBidData
+} from "~@/utils/functions/index"
 const app = express();
 const tempUpload = multer({
   storage: multer.memoryStorage()
@@ -313,8 +317,11 @@ app.get("/hint/:pid", async (req, res) => {
       message: "Project Not found"
     });
   }
-  const project = projects[0];
+  // const serializeProjects = await fetchRequireBidData(projects);
 
+  // const project = serializeProjects.projects[0]
+  const project = projects[0];
+  
   // @ts-ignore
   const suggestion = await getSuggestion(project);
   return res.json({
@@ -323,6 +330,46 @@ app.get("/hint/:pid", async (req, res) => {
   });
 });
 
+
+app.post("/bid/:pid", async (req,res) => {
+  const projectID = req.params.pid;
+  if (!projectID) {
+    return res.status(403).json({
+      error: true,
+      message: "Please specific project id"
+    });
+  }
+  const {
+    our_cost,
+    our_cover_letter
+  } = req.body
+  const {
+    data: { projects }
+  } = await gqlClient.query<
+    fetchProjectById,
+    fetchProjectByIdVariables
+  >({
+    query: FETCH_PROJECT_BY_ID,
+    variables: {
+      projectId: Number(projectID)
+    }
+  });
+
+  if (projects.length <= 0) {
+    return res.status(404).json({
+      error: true,
+      message: "Project Not found"
+    });
+  }
+  const serializeProjects = await fetchRequireBidData(projects);
+  const project = serializeProjects.projects[0]
+  // @ts-ignore
+  const suggestion = await biddingProject(project, our_cover_letter, our_cost);
+  // return res.json({
+  //   eror: false,
+  //   message: suggestion
+  // });
+})
 app.post("/message-attachment/:thread_id", tempUpload.single("file"), async (req, res) => {
   const threadID = req.params.thread_id;
   try {

@@ -5,6 +5,7 @@ import getToken from "~@/utils/functions/fl_get_token"
 import logger from "../logger";
 import querystring from "querystring";
 import { saveProjects } from ".";
+import _ from "lodash";
 
 const FILTER_SETING = {
     max_budget:8000,
@@ -12,7 +13,14 @@ const FILTER_SETING = {
     exchange_rate: 5,
     description_length: 100
 }
-
+export const getSuggestion = async (project: ILocalProject) => {
+  const cost = aiCost(project);
+  const description = "Hello sir - I am confident about this project, I can start right now. Hoping that you will review my cover letter and feedback, I am looking forward to hearing from you.Kind Regards";
+  return {
+    cost,
+    description
+  }
+}
 const aiCost =  (project: ILocalProject) => {
     if (project.our_cost) {
       return project.our_cost;
@@ -27,15 +35,32 @@ const aiCost =  (project: ILocalProject) => {
     return Math.round(cost);
   };
 
-export default async (project: ILocalProject) => {
-    const cost = aiCost(project);
+export default async (
+    project: ILocalProject, 
+    description: string,
+    price: number
+    ) => {
+    let cost = 0;
+    let descr = "";
+    const userPrice = Number(price);
+    if(userPrice !== 0) {
+        cost = price;
+    } else {
+        cost = aiCost(project)
+    }
+        
+    if(description !== "") {
+        descr = description
+    } else {
+        description = "Hello sir - I am confident about this project, I can start right now. Hoping that you will review my cover letter and feedback, I am looking forward to hearing from you.Kind Regards";
+    }
     const BID_DATA = {
         id: project.id,
         sum: cost,
         period: 3,
         milestone_percentage: 100,
         csrf_token: await getToken(project.linkUrl),
-        descr: "Hello sir - I am confident about this project, I can start right now.           Hoping that you will review my cover letter and feedback, I am looking forward to hearing from you.Kind Regards"
+        descr: description
     }
     return requestToBid(project, BID_DATA);
 }
@@ -46,7 +71,6 @@ const requestToBid = async (project: ILocalProject, bidData) => {
         project.id,
         JSON.stringify(bidData)
     )
-
     const { data } = await httpModule.axios.post<{
         status: FLResponseStatus;
         bid: any;
@@ -56,7 +80,6 @@ const requestToBid = async (project: ILocalProject, bidData) => {
             "x-xsrf-token": bidData.csrf_token
         }
     })
-
     const { status } = data;
     if(status === FLResponseStatus.SUCCESS) {
         project.isBid = true;

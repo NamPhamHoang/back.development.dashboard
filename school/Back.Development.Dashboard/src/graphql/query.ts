@@ -64,26 +64,44 @@ export const FETCH_PROJECT_BY_ID = gql`
           title
         }
       }
-     id
-     title
-     text
-     userId
-     status
-     our_cost
-     featured
-     maxbudget
-     minbudget
-     linkUrl
-     exchangerate
-     nonpublic
-     ipcontract
-     nda
-     confirm
-     submitDate
-     fulltime
-     userName
-     created_at
-     updated_at
+      actionText
+      appended_descr
+      bidError
+      buyer
+      confirm
+      currency
+      currencyCode
+      exchangerate
+      extended
+      featured
+      free_bid_until
+      fulltime
+      hidebids
+      id
+      imgUrl
+      ipcontract
+      isBid
+      jobString
+      linkUrl
+      listed
+      maxbudget
+      minbudget
+      nda
+      nonpublic
+      our_cost
+      projIsHourly
+      recruiter
+      submitDate
+      text
+      time
+      title
+      type
+      urgent
+      userId
+      our_cover_letter
+      userName
+      created_at
+      updated_at
     }
   }
 `

@@ -42,7 +42,8 @@ const initApollo = <T>(
     connectToDevTools: typeof window !== "undefined",
     ssrMode: typeof window === "undefined", // Disables forceFetch on the server (so queries are only run once)
     link: concat(authMiddleware, httpLink),
-    cache: new InMemoryCache().restore(initialState || {}),
+    cache: new InMemoryCache({addTypename: false}).restore(initialState || {}),
+  
   });
 };
 

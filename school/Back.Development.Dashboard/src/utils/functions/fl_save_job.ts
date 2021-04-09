@@ -79,6 +79,7 @@ export default async (projects: ILocalProject[]) => {
       };
     }
   );
+
   await gqlClient.mutate<upsertProjects, upsertProjectsVariables>({
     mutation: UPSERT_PROJECTS,
     variables: {

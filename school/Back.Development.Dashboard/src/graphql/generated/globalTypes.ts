@@ -30,6 +30,7 @@ export enum board_issue_update_column {
   deadline = "deadline",
   description = "description",
   id = "id",
+  isLock = "isLock",
   order = "order",
   prLink = "prLink",
   status = "status",
@@ -392,9 +393,10 @@ export interface board_issue_bool_exp {
   board?: board_bool_exp | null;
   board_id?: Int_comparison_exp | null;
   cost?: Float_comparison_exp | null;
-  deadline?: time_comparison_exp | null;
+  deadline?: timestamptz_comparison_exp | null;
   description?: String_comparison_exp | null;
   id?: String_comparison_exp | null;
+  isLock?: Boolean_comparison_exp | null;
   members?: issue_member_bool_exp | null;
   order?: Int_comparison_exp | null;
   prLink?: String_comparison_exp | null;
@@ -414,6 +416,7 @@ export interface board_issue_insert_input {
   deadline?: any | null;
   description?: string | null;
   id?: string | null;
+  isLock?: boolean | null;
   members?: issue_member_arr_rel_insert_input | null;
   order?: number | null;
   prLink?: string | null;
@@ -850,7 +853,6 @@ export interface projectsjobs_bool_exp {
   _or?: (projectsjobs_bool_exp | null)[] | null;
   job?: jobs_bool_exp | null;
   job_id?: Int_comparison_exp | null;
-  project?: projects_bool_exp | null;
   project_id?: Int_comparison_exp | null;
 }
 
@@ -860,7 +862,6 @@ export interface projectsjobs_bool_exp {
 export interface projectsjobs_insert_input {
   job?: jobs_obj_rel_insert_input | null;
   job_id?: number | null;
-  project?: projects_obj_rel_insert_input | null;
   project_id?: number | null;
 }
 
@@ -871,21 +872,6 @@ export interface projectsjobs_on_conflict {
   constraint: projectsjobs_constraint;
   update_columns: projectsjobs_update_column[];
   where?: projectsjobs_bool_exp | null;
-}
-
-/**
- * expression to compare columns of type time. All fields are combined with logical 'AND'.
- */
-export interface time_comparison_exp {
-  _eq?: any | null;
-  _gt?: any | null;
-  _gte?: any | null;
-  _in?: any[] | null;
-  _is_null?: boolean | null;
-  _lt?: any | null;
-  _lte?: any | null;
-  _neq?: any | null;
-  _nin?: any[] | null;
 }
 
 /**
