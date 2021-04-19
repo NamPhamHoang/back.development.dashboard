@@ -8,6 +8,25 @@
 //==============================================================
 
 /**
+ * unique or primary key constraints on table "Chat_gr_log"
+ */
+export enum Chat_gr_log_constraint {
+  Chat_gr_log_pkey = "Chat_gr_log_pkey",
+}
+
+/**
+ * update columns of table "Chat_gr_log"
+ */
+export enum Chat_gr_log_update_column {
+  _data = "_data",
+  created_at = "created_at",
+  id = "id",
+  thread_id = "thread_id",
+  updated_at = "updated_at",
+  user_id = "user_id",
+}
+
+/**
  * unique or primary key constraints on table "board"
  */
 export enum board_constraint {
@@ -67,6 +86,23 @@ export enum chat_attachment_update_column {
   message_id = "message_id",
   thread_id = "thread_id",
   user_id = "user_id",
+}
+
+/**
+ * unique or primary key constraints on table "chat_group"
+ */
+export enum chat_group_constraint {
+  chat_group_pkey = "chat_group_pkey",
+}
+
+/**
+ * update columns of table "chat_group"
+ */
+export enum chat_group_update_column {
+  created_at = "created_at",
+  thread_id = "thread_id",
+  title = "title",
+  updated_at = "updated_at",
 }
 
 /**
@@ -281,6 +317,54 @@ export interface Boolean_comparison_exp {
 }
 
 /**
+ * input type for inserting array relation for remote table "Chat_gr_log"
+ */
+export interface Chat_gr_log_arr_rel_insert_input {
+  data: Chat_gr_log_insert_input[];
+  on_conflict?: Chat_gr_log_on_conflict | null;
+}
+
+/**
+ * Boolean expression to filter rows from the table "Chat_gr_log". All fields are combined with a logical 'AND'.
+ */
+export interface Chat_gr_log_bool_exp {
+  _and?: (Chat_gr_log_bool_exp | null)[] | null;
+  _data?: jsonb_comparison_exp | null;
+  _not?: Chat_gr_log_bool_exp | null;
+  _or?: (Chat_gr_log_bool_exp | null)[] | null;
+  chat_group?: chat_group_bool_exp | null;
+  created_at?: timestamptz_comparison_exp | null;
+  id?: Int_comparison_exp | null;
+  thread_id?: bigint_comparison_exp | null;
+  updated_at?: timestamptz_comparison_exp | null;
+  user?: users_bool_exp | null;
+  user_id?: Int_comparison_exp | null;
+}
+
+/**
+ * input type for inserting data into table "Chat_gr_log"
+ */
+export interface Chat_gr_log_insert_input {
+  _data?: any | null;
+  chat_group?: chat_group_obj_rel_insert_input | null;
+  created_at?: any | null;
+  id?: number | null;
+  thread_id?: any | null;
+  updated_at?: any | null;
+  user?: users_obj_rel_insert_input | null;
+  user_id?: number | null;
+}
+
+/**
+ * on conflict condition type for table "Chat_gr_log"
+ */
+export interface Chat_gr_log_on_conflict {
+  constraint: Chat_gr_log_constraint;
+  update_columns: Chat_gr_log_update_column[];
+  where?: Chat_gr_log_bool_exp | null;
+}
+
+/**
  * expression to compare columns of type Float. All fields are combined with logical 'AND'.
  */
 export interface Float_comparison_exp {
@@ -492,6 +576,48 @@ export interface chat_attachment_on_conflict {
   constraint: chat_attachment_constraint;
   update_columns: chat_attachment_update_column[];
   where?: chat_attachment_bool_exp | null;
+}
+
+/**
+ * Boolean expression to filter rows from the table "chat_group". All fields are combined with a logical 'AND'.
+ */
+export interface chat_group_bool_exp {
+  _and?: (chat_group_bool_exp | null)[] | null;
+  _not?: chat_group_bool_exp | null;
+  _or?: (chat_group_bool_exp | null)[] | null;
+  created_at?: timestamptz_comparison_exp | null;
+  messages?: Chat_gr_log_bool_exp | null;
+  thread_id?: bigint_comparison_exp | null;
+  title?: String_comparison_exp | null;
+  updated_at?: timestamptz_comparison_exp | null;
+}
+
+/**
+ * input type for inserting data into table "chat_group"
+ */
+export interface chat_group_insert_input {
+  created_at?: any | null;
+  messages?: Chat_gr_log_arr_rel_insert_input | null;
+  thread_id?: any | null;
+  title?: string | null;
+  updated_at?: any | null;
+}
+
+/**
+ * input type for inserting object relation for remote table "chat_group"
+ */
+export interface chat_group_obj_rel_insert_input {
+  data: chat_group_insert_input;
+  on_conflict?: chat_group_on_conflict | null;
+}
+
+/**
+ * on conflict condition type for table "chat_group"
+ */
+export interface chat_group_on_conflict {
+  constraint: chat_group_constraint;
+  update_columns: chat_group_update_column[];
+  where?: chat_group_bool_exp | null;
 }
 
 /**
@@ -950,6 +1076,7 @@ export interface user_skill_on_conflict {
  * Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'.
  */
 export interface users_bool_exp {
+  Chat_gr_logs?: Chat_gr_log_bool_exp | null;
   _and?: (users_bool_exp | null)[] | null;
   _not?: users_bool_exp | null;
   _or?: (users_bool_exp | null)[] | null;
@@ -971,6 +1098,7 @@ export interface users_bool_exp {
  * input type for inserting data into table "users"
  */
 export interface users_insert_input {
+  Chat_gr_logs?: Chat_gr_log_arr_rel_insert_input | null;
   auto_bid?: boolean | null;
   email?: string | null;
   first_name?: string | null;

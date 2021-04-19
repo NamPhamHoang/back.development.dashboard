@@ -20,13 +20,19 @@ import gqlClient from "~@/modules/hasura.module";
 import { getSuggestion } from "~@/utils/functions/fl_bid_job";
 import biddingProject from "~@/utils/functions/fl_bid_job";
 import { FETCH_PROJECT_BY_ID } from "~@/graphql/query";
+import { INSERT_CHAT_GROUP_LOG } from "~@/graphql/mutation";
 import {
   fetchProjectById,
   fetchProjectByIdVariables
 } from "~@/graphql/generated/fetchProjectById";
 import {
+  insertChatGrLog,
+  insertChatGrLogVariables
+} from "~@/graphql/generated/insertChatGrLog";
+import {
   fetchRequireBidData
 } from "~@/utils/functions/index"
+import { Chat_gr_log_constraint } from "~@/graphql/generated/globalTypes";
 const app = express();
 const tempUpload = multer({
   storage: multer.memoryStorage()
@@ -257,39 +263,6 @@ app.post("/send-email" , async (req, res) => {
   
 });
 
-//bidding project
-app.post("/bidding-project", async (req, res) => {
-  const {
-    project_id,
-    bidder_id,
-    amount,
-    period,
-    milestone_percentage
-  } = req.body
-  console.log(req.body)
-  // try {
-  //   const {
-  //     status,
-  //     data
-  //   } = await http.axios.post(
-  //     `https://www.freelancer.com/api/projects/0.1/bids/`,
-  //     {
-  //       project_id,
-  //       bidder_id,
-  //       amount,
-  //       period,
-  //       milestone_percentage
-  //     })
-  // } catch (err) {
-  //   res.status(500).send({
-  //     isError: true,
-  //     message: err.toString()
-  //   });
-  // }
- 
-})
-
-
 app.get("/hint/:pid", async (req, res) => {
   const projectID = req.params.pid;
   if (!projectID) {
@@ -317,9 +290,6 @@ app.get("/hint/:pid", async (req, res) => {
       message: "Project Not found"
     });
   }
-  // const serializeProjects = await fetchRequireBidData(projects);
-
-  // const project = serializeProjects.projects[0]
   const project = projects[0];
   
   // @ts-ignore
@@ -416,6 +386,50 @@ app.post("/message-attachment/:thread_id", tempUpload.single("file"), async (req
     });
   }
 });
+
+//group message
+app.post("/space-message/:thread_id", async (req, res) => {
+  const threadID = req.params.thread_id;
+  const userID = req.body.userID;
+  const message = req.body.message;
+  try {
+    const {
+      data
+    } = await gqlClient.mutate<
+      insertChatGrLog,
+      insertChatGrLogVariables
+    >({
+      mutation: INSERT_CHAT_GROUP_LOG,
+      variables: {
+        data: {
+          _data: {
+            message
+          },
+          thread_id: threadID,
+          user_id: userID,
+        },
+        on_conflict: {
+          constraint: Chat_gr_log_constraint.Chat_gr_log_pkey,
+          update_columns: []
+        }
+      }
+    });
+    if(data) {
+      return res.json({
+        isError: false,
+        message: message,
+        client_message_id: moment.utc().format("X")
+      });
+    }
+  } catch (err) {
+    res.status(500).send({
+      isError: true,
+      message: err.toString()
+    });
+  }
+});
+
+
 (async () => {
   app.listen(process.env.PORT, () => {
     log.info(`> web application is runnning on PORT: ${process.env.PORT}`, {

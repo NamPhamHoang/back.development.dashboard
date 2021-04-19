@@ -109,3 +109,14 @@ export const INSERT_CHAT_ATTACHMENT = gql`
     }
   }
 `;
+
+export const INSERT_CHAT_GROUP_LOG = gql`
+  mutation insertChatGrLog($data: Chat_gr_log_insert_input!, $on_conflict: Chat_gr_log_on_conflict!) {
+    insert_Chat_gr_log_one(object: $data, on_conflict: $on_conflict) {
+      _data
+      user_id
+      thread_id
+      id
+    }
+  }
+`;
