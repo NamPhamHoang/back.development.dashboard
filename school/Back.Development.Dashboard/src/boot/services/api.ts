@@ -24,19 +24,33 @@ import { INSERT_CHAT_GROUP_LOG } from "~@/graphql/mutation";
 import {
   fetchProjectById,
   fetchProjectByIdVariables
-} from "~@/graphql/generated/fetchProjectById";
+} from "~@/graphql/generated/fetchProjectById"; 
 import {
   insertChatGrLog,
   insertChatGrLogVariables
 } from "~@/graphql/generated/insertChatGrLog";
 import {
   fetchRequireBidData
-} from "~@/utils/functions/index"
+} from "~@/utils/functions/index";
+import path from "path";
 import { Chat_gr_log_constraint } from "~@/graphql/generated/globalTypes";
+import { reverse } from "lodash";
 const app = express();
 const tempUpload = multer({
   storage: multer.memoryStorage()
 });
+
+const groupStore = multer.diskStorage({
+  destination: "./src/uploads/",
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+
+const spaceUpload = multer({
+  storage: groupStore
+})
+
 if (process.env.IS_LISTEN_WS === "1") {
   listen()
 }
@@ -70,7 +84,7 @@ app.use(
     extended: true,
   })
 );
-
+app.use("/uploads", express.static('./src/uploads'));
 
 app.use((err, req, res, next) => {
   console.log(err);
@@ -82,9 +96,7 @@ app.use((err, req, res, next) => {
 
 app.post(
   "/message-attachment/:thread_id",
-  tempUpload.single("file"),
-
-  async (req, res) => {
+  tempUpload.single("file"), async (req, res) => {
     const threadID = req.params.thread_id;
     try {
       request.post(
@@ -129,7 +141,6 @@ app.get("/chat_thread/:id", chatThread);
 app.post("/message/:thread_id", async (req, res) => {
   const threadID = req.params.thread_id;
   const message = req.body.message;
-  console.log(message, threadID);
   try {
     const { data } = await http.axios.post(
       `https://www.freelancer.com/api/messages/0.1/threads/${threadID}/messages/?compact=true&new_errors=true`,
@@ -229,7 +240,6 @@ app.post("/create-thread", async (req, res) => {
       // @ts-ignore
       thread: { context: {id} }
     } = await http.axios.post(`https://www.freelancer.com/api/messages/0.1/threads/?members[]=${ownerId}&members[]=${userId}&context_type=project&context=${projectId}`)
-    console.log(id)
     // http.axios.post(`/message/${id}`, qs.stringify({
     //   message: "Hey, I'm interested in your project. Please send me a message so that we can discuss more."
     // }))
@@ -391,7 +401,7 @@ app.post("/message-attachment/:thread_id", tempUpload.single("file"), async (req
 app.post("/space-message/:thread_id", async (req, res) => {
   const threadID = req.params.thread_id;
   const userID = req.body.userID;
-  const message = req.body.message;
+  const _data = req.body.message;
   try {
     const {
       data
@@ -402,9 +412,7 @@ app.post("/space-message/:thread_id", async (req, res) => {
       mutation: INSERT_CHAT_GROUP_LOG,
       variables: {
         data: {
-          _data: {
-            message
-          },
+          _data,
           thread_id: threadID,
           user_id: userID,
         },
@@ -417,7 +425,7 @@ app.post("/space-message/:thread_id", async (req, res) => {
     if(data) {
       return res.json({
         isError: false,
-        message: message,
+        message: "Success",
         client_message_id: moment.utc().format("X")
       });
     }
@@ -429,6 +437,48 @@ app.post("/space-message/:thread_id", async (req, res) => {
   }
 });
 
+app.post("/space-attachment/:thread_id/:user_id", spaceUpload.single("file"), async (req, res) => {
+  const threadID = req.params.thread_id;
+  const userID = req.params.user_id;
+ 
+  const message = (req as any).file.filename;
+  try {
+    // insert into database
+    const {
+      data
+    } = await gqlClient.mutate<
+      insertChatGrLog,
+      insertChatGrLogVariables
+    >({
+      mutation: INSERT_CHAT_GROUP_LOG,
+      variables: {
+        data: {
+          _data: message,
+          thread_id: threadID,
+          user_id: Number(userID),
+          isAttachment: true
+        },
+        on_conflict: {
+          constraint: Chat_gr_log_constraint.Chat_gr_log_pkey,
+          update_columns: []
+        }
+      }
+    });
+    if(data) {
+      return res.status(200).json({
+        isError: false,
+        message: "Success upload",
+        client_message_id: moment.utc().format("X")
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({
+      isError: true,
+      message: err.toString()
+    });
+  }
+});
 
 (async () => {
   app.listen(process.env.PORT, () => {

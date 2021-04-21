@@ -15,6 +15,7 @@ export interface insertChatGrLog_insert_Chat_gr_log_one {
   user_id: number | null;
   thread_id: any;
   id: number;
+  isAttachment: boolean;
 }
 
 export interface insertChatGrLog {

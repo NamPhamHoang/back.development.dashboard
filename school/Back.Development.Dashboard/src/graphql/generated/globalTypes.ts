@@ -21,6 +21,7 @@ export enum Chat_gr_log_update_column {
   _data = "_data",
   created_at = "created_at",
   id = "id",
+  isAttachment = "isAttachment",
   thread_id = "thread_id",
   updated_at = "updated_at",
   user_id = "user_id",
@@ -335,6 +336,7 @@ export interface Chat_gr_log_bool_exp {
   chat_group?: chat_group_bool_exp | null;
   created_at?: timestamptz_comparison_exp | null;
   id?: Int_comparison_exp | null;
+  isAttachment?: Boolean_comparison_exp | null;
   thread_id?: bigint_comparison_exp | null;
   updated_at?: timestamptz_comparison_exp | null;
   user?: users_bool_exp | null;
@@ -349,6 +351,7 @@ export interface Chat_gr_log_insert_input {
   chat_group?: chat_group_obj_rel_insert_input | null;
   created_at?: any | null;
   id?: number | null;
+  isAttachment?: boolean | null;
   thread_id?: any | null;
   updated_at?: any | null;
   user?: users_obj_rel_insert_input | null;

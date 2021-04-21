@@ -12,6 +12,7 @@ yarn.lock
 dist
 .vscode
 src/__tests__
+src/uploads
 jest.config.js
 jest.setup.js
 schema.json

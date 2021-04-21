@@ -117,6 +117,7 @@ export const INSERT_CHAT_GROUP_LOG = gql`
       user_id
       thread_id
       id
+      isAttachment
     }
   }
 `;

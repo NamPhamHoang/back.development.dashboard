@@ -7,7 +7,6 @@ import {
 
 export const saveMessageLog = messageBody => {
     const threadId = messageBody.data.thread.id;
-    console.log(threadId)
     return hsrClient.mutate<insertChatLog, insertChatLogVariables>({
         mutation: INSERT_CHAT_LOG,
         variables: {
